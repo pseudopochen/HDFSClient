@@ -1,4 +1,4 @@
-package com.luban.mapreduce.writable;
+package com.luban.mapreduce.writableComparable;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -9,32 +9,28 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
 
-public class FlowDriver {
+public class FlowSortDriver {
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf);
 
-        job.setJarByClass(FlowDriver.class);
+        job.setJarByClass(FlowSortDriver.class);
 
-        job.setMapperClass(FlowMapper.class);
-        job.setReducerClass(FlowReducer.class);
+        job.setMapperClass(FlowSortMapper.class);
+        job.setReducerClass(FlowSortReducer.class);
 
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(FlowBean.class);
+        job.setMapOutputKeyClass(FlowBean.class);
+        job.setMapOutputValueClass(Text.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FlowBean.class);
 
-        //self-defined partitioner
-        job.setPartitionerClass(AreaCodePartitioner.class);
-        job.setNumReduceTasks(5);
-
-        FileInputFormat.setInputPaths(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_data.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_data_out"));
+        FileInputFormat.setInputPaths(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_data_out"));
+        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_sort_out"));
 
         boolean res = job.waitForCompletion(true);
 
         System.exit(res ? 0 : 1);
+
     }
 }
