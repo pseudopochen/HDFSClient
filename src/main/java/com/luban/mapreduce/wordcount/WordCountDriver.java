@@ -33,8 +33,11 @@ public class WordCountDriver {
         //CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
         CombineTextInputFormat.setMaxInputSplitSize(job, 20971520);
 
+        // Combiner for the map stage
+        job.setCombinerClass(WordCountReducer.class);
+
         FileInputFormat.setInputPaths(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/inputcombinetextinputformat")); //args[0]));
-        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/outputcombinetextinputformat3")); //args[1]));
+        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/outputcombinetextinputformat4")); //args[1]));
 
         boolean result = job.waitForCompletion(true);
         System.exit(result ? 0 : 1);
