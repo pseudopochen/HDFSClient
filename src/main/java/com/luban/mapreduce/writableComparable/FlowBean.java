@@ -1,6 +1,5 @@
 package com.luban.mapreduce.writableComparable;
 
-import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;

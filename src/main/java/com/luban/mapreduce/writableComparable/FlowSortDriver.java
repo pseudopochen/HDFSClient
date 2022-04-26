@@ -25,8 +25,11 @@ public class FlowSortDriver {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FlowBean.class);
 
+        job.setPartitionerClass(AreaCodePartitioner.class);
+        job.setNumReduceTasks(5);
+
         FileInputFormat.setInputPaths(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_data_out"));
-        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_sort_out"));
+        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_partition_sort_out"));
 
         boolean res = job.waitForCompletion(true);
 
