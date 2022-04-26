@@ -4,6 +4,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.compress.BZip2Codec;
+import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -15,6 +17,11 @@ public class WordCountDriver {
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
 
         Configuration conf = new Configuration();
+
+        // mapper output compression
+        conf.setBoolean("mapreduce.map.output.compress", true);
+        conf.setClass("mapreduce.map.output.compress.codec", BZip2Codec.class, CompressionCodec.class);
+
         Job job = Job.getInstance(conf);
 
         job.setJarByClass(WordCountDriver.class);
@@ -36,8 +43,12 @@ public class WordCountDriver {
         // Combiner for the map stage
         job.setCombinerClass(WordCountReducer.class);
 
+        // reducer output compression
         FileInputFormat.setInputPaths(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/inputcombinetextinputformat")); //args[0]));
-        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/outputcombinetextinputformat4")); //args[1]));
+        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/outputcombinetextinputformatzip1")); //args[1]));
+
+        FileOutputFormat.setCompressOutput(job, true);
+        FileOutputFormat.setOutputCompressorClass(job, BZip2Codec.class);
 
         boolean result = job.waitForCompletion(true);
         System.exit(result ? 0 : 1);
