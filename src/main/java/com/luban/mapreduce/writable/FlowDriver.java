@@ -26,8 +26,12 @@ public class FlowDriver {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FlowBean.class);
 
+        // self-defined partitioner
+        job.setPartitionerClass(AreaCodePartitioner.class);
+        job.setNumReduceTasks(5);
+
         FileInputFormat.setInputPaths(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_data.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_data_out"));
+        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/phone_data_out2"));
 
         boolean res = job.waitForCompletion(true);
 
