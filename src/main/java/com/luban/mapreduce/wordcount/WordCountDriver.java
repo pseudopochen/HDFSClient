@@ -5,6 +5,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
@@ -27,8 +28,13 @@ public class WordCountDriver {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
-        FileInputFormat.setInputPaths(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        // Combine 4 small files into 3 splits of 4 MB or 1 split of 20 MB
+        job.setInputFormatClass(CombineTextInputFormat.class);
+        //CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
+        CombineTextInputFormat.setMaxInputSplitSize(job, 20971520);
+
+        FileInputFormat.setInputPaths(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/inputcombinetextinputformat")); //args[0]));
+        FileOutputFormat.setOutputPath(job, new Path("/mnt/gv0/brick/modules/hadoop/hadoop-3.3.2/outputcombinetextinputformat3")); //args[1]));
 
         boolean result = job.waitForCompletion(true);
         System.exit(result ? 0 : 1);
